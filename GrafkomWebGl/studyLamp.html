@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Study</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="button-container">
+            <button class="center-button" id="startBase">Start Rotate Base</button>
+            <button class="center-button" id="pauseBase">Pause Rotate Base</button>
+        </div>
+
+        <div class="slider-container">
+            <label>Second Arm angle -30</label>
+            <input id="slider3" type="range" min="-30" max="30" step="10" value="0" />
+            <label>30</label>
+        </div>
+
+        <div class="slider-container">
+            <label>Lamp head angle -20</label>
+            <input id="slider4" type="range" min="-20" max="20" step="10" value="0" />
+            <label>20</label>
+        </div>
+
+        <div class="button-container">
+            <button class="center-button" onclick="toggleLight()">Turn On/Off Light</button>
+        </div>
+
+        <canvas id="gl-canvas" width="512" height="512"></canvas>
+    </div>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+        attribute vec4 aPosition;
+        attribute vec2 aTexCoord;
+        
+        uniform mat4 modelViewMatrix;
+        uniform mat4 projectionMatrix;
+        
+        varying vec2 vTexCoord;
+        
+        void main() {
+            gl_Position = projectionMatrix * modelViewMatrix * aPosition;
+            vTexCoord = aTexCoord;  // Pass texture coordinates to fragment shader
+        }
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+        precision mediump float;
+
+        uniform sampler2D texture;
+        uniform bool uUseTexture;   // Apakah menggunakan tekstur
+        uniform vec4 uColor;        // Warna solid jika tidak menggunakan tekstur
+        
+        varying vec2 vTexCoord;
+        
+        void main() {
+            if (uUseTexture) {
+                gl_FragColor = texture2D(texture, vTexCoord);  // Gunakan tekstur
+            } else {
+                gl_FragColor = uColor;  // Gunakan warna solid
+            }
+        }
+    </script>
+
+    <script src="initShaders.js"></script>
+    <script src="MVnew.js"></script>
+    <script src="studyLamp.js"></script>
+</body>
+</html>
